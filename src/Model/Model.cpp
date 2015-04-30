@@ -137,12 +137,9 @@ void Model::genMeshPieces()
         mp.meshHelper = meshHelper;
 
         ofMesh mesh = loader.getMesh(i);
-        mp.vbo.setMesh(mesh, GL_STREAM_DRAW);
-//        mp.vbo.setVertexData(mesh.getVerticesPointer(), mesh.getNumVertices(), GL_STREAM_DRAW);
-//        mp.vbo.setIndexData(mesh.getIndexPointer(), mesh.getNumIndices(), GL_STATIC_DRAW);
-//        mp.vbo.setColorData(mesh.getColorsPointer(), mesh.getNumColors(), GL_STATIC_DRAW);
-//        mp.vbo.setTexCoordData(mesh.getTexCoordsPointer(), mesh.getNumTexCoords(), GL_STATIC_DRAW);
-//        mp.vbo.setNormalData(mesh.getNormalsPointer(), mesh.getNumNormals(), GL_STATIC_DRAW);
+        mp.vbo = meshHelper->vbo;
+        mp.vbo.clearVertices();
+        mp.vbo.setVertexData(mesh.getVerticesPointer(), mesh.getNumVertices(), GL_STREAM_DRAW);
         
         ofMaterial material = meshHelper->material;
         mp.material = material;
