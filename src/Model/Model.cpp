@@ -23,9 +23,9 @@ void Model::setup()
     loader.setPosition(0, 0, 0);
     loader.setScale(0.5, 0.5, 0.5);
     loader.setRotation(0, 180, 1, 0, 0);
-    loader.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
-    loader.playAllAnimations();
-    loader.setPausedForAllAnimations(true);
+//    loader.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
+//    loader.playAllAnimations();
+//    loader.setPausedForAllAnimations(true);
     ofLoadImage(diffuseTex, "model/boy_10.tga");
     modelMatrix = loader.getModelMatrix();
     
@@ -66,7 +66,7 @@ void Model::update()
     // piece transform
     for (auto &ap : animPcts)
     {
-        ap += 0.025;
+        ap += 0.015;
         if (ap > 1.0)
             ap = 0.0;
     }
@@ -250,7 +250,7 @@ void Model::bindBoneIDAndWeightToAttribute()
 
 void Model::populateEveryAnimationMatrix()
 {
-    float step = 0.05;
+    float step = 0.01;
     for (float i = 0; i < 1.0; i += step)
     {
         loader.setPositionForAllAnimations(i);

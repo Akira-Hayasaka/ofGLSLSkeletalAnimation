@@ -39,7 +39,7 @@ void main()
 {
     mat4 transformMatrix = getMat(modelTransTexture, 0.0);
     
-    vec4 mPos = position;
+    vec4 mPos = vec4(0.0);
     mPos += weights[0] * (getMat(animationTexture, boneIDs[0]) * position);
     mPos += weights[1] * (getMat(animationTexture, boneIDs[1]) * position);
     mPos += weights[2] * (getMat(animationTexture, boneIDs[2]) * position);
