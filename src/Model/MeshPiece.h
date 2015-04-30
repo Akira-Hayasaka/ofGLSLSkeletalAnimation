@@ -41,6 +41,7 @@ public:
     
     ofTexture instancedAnimTextre; // <= take all instance's anim mat of this frame
     
+    ofVbo vbo;
     ofMaterial material;
     ofBlendMode blendmode;
     vector<BoneInfo> boneInfos;

@@ -115,8 +115,7 @@ void Model::draw(ofMatrix4x4 camMvpMatrix)
         
         ofEnableBlendMode(p.blendmode);
         
-        p.meshHelper->vbo.drawElements(GL_TRIANGLES,
-                                       p.meshHelper->indices.size());
+        p.vbo.drawElements(GL_TRIANGLES, p.vbo.getNumIndices());
         
         p.material.end();
     }
@@ -134,12 +133,21 @@ void Model::genMeshPieces()
     {
         MeshPiece mp;
         
-        mp.meshHelper = &loader.getMeshHelper(i);
+        ofxAssimpMeshHelper* meshHelper = &loader.getMeshHelper(i);
+        mp.meshHelper = meshHelper;
+
+        ofMesh mesh = loader.getMesh(i);
+        mp.vbo.setMesh(mesh, GL_STREAM_DRAW);
+//        mp.vbo.setVertexData(mesh.getVerticesPointer(), mesh.getNumVertices(), GL_STREAM_DRAW);
+//        mp.vbo.setIndexData(mesh.getIndexPointer(), mesh.getNumIndices(), GL_STATIC_DRAW);
+//        mp.vbo.setColorData(mesh.getColorsPointer(), mesh.getNumColors(), GL_STATIC_DRAW);
+//        mp.vbo.setTexCoordData(mesh.getTexCoordsPointer(), mesh.getNumTexCoords(), GL_STATIC_DRAW);
+//        mp.vbo.setNormalData(mesh.getNormalsPointer(), mesh.getNumNormals(), GL_STATIC_DRAW);
         
-        ofMaterial material = mp.meshHelper->material;
+        ofMaterial material = meshHelper->material;
         mp.material = material;
         
-        ofBlendMode blend = mp.meshHelper->blendMode;
+        ofBlendMode blend = meshHelper->blendMode;
         mp.blendmode = blend;
         
         mp.instancedAnimTextre.allocate(nInstance * 4 * maxNBone, 1, GL_RGBA32F, GL_RGBA, GL_FLOAT);
@@ -226,7 +234,7 @@ void Model::bindBoneIDAndWeightToAttribute()
         }
         
         int boneIDLoc = shader.getAttributeLocation("boneIDs");
-        piece.meshHelper->vbo.setAttributeData(boneIDLoc,
+        piece.vbo.setAttributeData(boneIDLoc,
                                                &boneIDs[0],
                                                4,
                                                boneIDs.size(),
@@ -234,7 +242,7 @@ void Model::bindBoneIDAndWeightToAttribute()
                                                sizeof(ofVec4f));
         
         int weightLoc = shader.getAttributeLocation("weights");
-        piece.meshHelper->vbo.setAttributeData(weightLoc,
+        piece.vbo.setAttributeData(weightLoc,
                                                &weights[0],
                                                4,
                                                weights.size(),
