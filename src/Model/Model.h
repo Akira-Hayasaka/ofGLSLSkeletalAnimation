@@ -22,6 +22,7 @@ public:
     void setup();
     void update();
     void draw(ofMatrix4x4 camMvpMatrix);
+    void debug_draws();
     
 private:
     

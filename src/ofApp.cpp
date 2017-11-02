@@ -31,6 +31,8 @@ void ofApp::draw()
     
     cam.end();
     
+    model.debug_draws();
+    
     ofDrawBitmapStringHighlight("fps:" + ofToString(ofGetFrameRate()), 10, ofGetHeight() - 20);
 }
 

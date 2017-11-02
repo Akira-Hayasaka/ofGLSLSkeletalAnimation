@@ -19,7 +19,7 @@ void Model::setup()
     
     shader.load("shader/modelShader");
     
-    loader.loadModel("model/astroBoy_walk.dae", true);
+    loader.loadModel("model/astroBoy_walk.dae", false);
     loader.setPosition(0, 0, 0);
     loader.setScale(0.5, 0.5, 0.5);
     loader.setRotation(0, 180, 1, 0, 0);
@@ -91,35 +91,34 @@ void Model::update()
 
 void Model::draw(ofMatrix4x4 camMvpMatrix)
 {
-    diffuseTex.bind();
     shader.begin();
-    ofPushStyle();
     
     GLuint matLoc = glGetUniformLocation(shader.getProgram(), "camMvpMatrix");
     if (matLoc != -1)
-    {
         glUniformMatrix4fv(matLoc, 1, GL_FALSE, camMvpMatrix.getPtr());
-    }
-
+    
     shader.setUniformTexture("modelTransTexture", modelTransTexture, 1);
     
     for (auto p : pieces)
     {
         shader.setUniformTexture("animationTexture", p.instancedAnimTextre, 2);
         shader.setUniformTexture("diffuseTex", diffuseTex, 3);
-        
-        p.material.begin();
-        
-        ofEnableBlendMode(p.blendmode);
-        
         p.vbo.drawElements(GL_TRIANGLES, p.vbo.getNumIndices());
-        
-        p.material.end();
     }
     
-    ofPopStyle();
     shader.end();
-    diffuseTex.unbind();
+}
+
+void Model::debug_draws()
+{
+    auto y = 0;
+    modelTransTexture.draw(0, 0, ofGetWidth(), 50);
+    y = 50;
+    for (auto p : pieces)
+    {
+        p.instancedAnimTextre.draw(0, y, ofGetWidth(), 50);
+        y += 50;
+    }
 }
 
 void Model::genMeshPieces()
@@ -132,7 +131,7 @@ void Model::genMeshPieces()
         
         ofxAssimpMeshHelper* meshHelper = &loader.getMeshHelper(i);
         mp.meshHelper = meshHelper;
-
+        
         ofMesh mesh = loader.getMesh(i);
         mp.vbo = meshHelper->vbo;
         mp.vbo.clearVertices();
@@ -195,7 +194,7 @@ void Model::bindBoneIDAndWeightToAttribute()
                 {
                     int vertexID = aimesh->mBones[boneID]->mWeights[weightID].mVertexId;
                     float weight = aimesh->mBones[boneID]->mWeights[weightID].mWeight;
-
+                    
                     // Select the 4 largest weights
                     for (int slotID = 0; slotID < maxBone; slotID++)
                     {
@@ -229,24 +228,24 @@ void Model::bindBoneIDAndWeightToAttribute()
         
         int boneIDLoc = shader.getAttributeLocation("boneIDs");
         piece.vbo.setAttributeData(boneIDLoc,
-                                               &boneIDs[0],
-                                               4,
-                                               boneIDs.size(),
-                                               GL_STATIC_DRAW,
-                                               sizeof(ofVec4f));
+                                   &boneIDs[0],
+                                   4,
+                                   boneIDs.size(),
+                                   GL_STATIC_DRAW,
+                                   sizeof(ofVec4f));
         
         int weightLoc = shader.getAttributeLocation("weights");
         piece.vbo.setAttributeData(weightLoc,
-                                               &weights[0],
-                                               4,
-                                               weights.size(),
-                                               GL_STATIC_DRAW,
-                                               sizeof(ofVec4f));
+                                   &weights[0],
+                                   4,
+                                   weights.size(),
+                                   GL_STATIC_DRAW,
+                                   sizeof(ofVec4f));
         
-//        for (auto bi : piece.boneInfos)
-//        {
-//            bi.dump();
-//        }
+        //        for (auto bi : piece.boneInfos)
+        //        {
+        //            bi.dump();
+        //        }
     }
 }
 
@@ -285,11 +284,10 @@ void Model::populateEveryAnimationMatrix()
                 
                 aiMatrix4x4 temp = aim;
                 temp.Transpose();
-                ofmat.set(temp.a1, temp.a2, temp.a3, temp.a4,
-                          temp.b1, temp.b2, temp.b3, temp.b4,
-                          temp.c1, temp.c2, temp.c3, temp.c4,
-                          temp.d1, temp.d2, temp.d3, temp.d4);
-                
+                ofmat.set(temp.a1 * 100.0, temp.a2 * 100.0, temp.a3 * 100.0, temp.a4 * 100.0,
+                          temp.b1 * 100.0, temp.b2 * 100.0, temp.b3 * 100.0, temp.b4 * 100.0,
+                          temp.c1 * 100.0, temp.c2 * 100.0, temp.c3 * 100.0, temp.c4 * 100.0,
+                          temp.d1 * 100.0, temp.d2 * 100.0, temp.d3 * 100.0, temp.d4);
                 boneMatrices.push_back(ofmat);
             }
             
